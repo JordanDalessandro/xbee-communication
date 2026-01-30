@@ -1,3 +1,5 @@
+//REMOVE BLINKY AT RUNTIME
+
 /*
  * XBee 900MHz Pro S3B - Sender Code
  * Teensy 4.1
@@ -11,10 +13,12 @@
 
 #define XBEE_SERIAL Serial1  // Using Serial1 on Teensy 4.1
 
+static unsigned long counter = 0;
+
 void setup() {
   // Initialize USB Serial for debugging
-  Serial.begin(115200);
-  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(9600);
+  //pinMode(LED_BUILTIN, OUTPUT);
   // while (!Serial && millis() < 3000); // Wait up to 3 seconds for Serial Monitor
 
   // Initialize XBee Serial (default 9600 baud for XBee)
@@ -22,16 +26,20 @@ void setup() {
 
   Serial.println("XBee Sender Ready");
   Serial.println("Sending data every 1 seconds...");
-  blinky(3, LED_BUILTIN, 50);  // (numtimes, pin, delaytime)
+  //blinky(1, LED_BUILTIN, 1000);  // (numtimes, pin, delaytime)
 }
 
 void loop() {
-  // Create a message with a counter
-  static unsigned long counter = 0;
+
+  //blinky(2, LED_BUILTIN, 100);
 
   // Send data to XBee
   String message = "Hello from Sender! Count: " + String(counter);
-  XBEE_SERIAL.println(message);
+
+  // XBEE_SERIAL.print('<');
+  XBEE_SERIAL.println('<' + message + '>');
+  //XBEE_SERIAL.println('>');
+
 
   // Debug output to USB Serial
   Serial.print("Sent: ");
@@ -42,6 +50,8 @@ void loop() {
   // Check if there's any response from receiver
   if (XBEE_SERIAL.available()) {
     Serial.print("Received: ");
+    
+
     while (XBEE_SERIAL.available()) {
       char c = XBEE_SERIAL.read();
       Serial.write(c);
@@ -50,5 +60,4 @@ void loop() {
   }
 
   delay(1000);                 // Send every 1 seconds
-  blinky(3, LED_BUILTIN, 50);  // (numtimes, pin, delaytime)
 }
