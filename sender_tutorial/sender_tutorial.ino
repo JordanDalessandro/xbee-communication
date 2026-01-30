@@ -13,30 +13,32 @@
 
 void setup() {
   // Initialize USB Serial for debugging
-  Serial.begin(9600);
-  while (!Serial && millis() < 3000); // Wait up to 3 seconds for Serial Monitor
-  
+  Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
+  // while (!Serial && millis() < 3000); // Wait up to 3 seconds for Serial Monitor
+
   // Initialize XBee Serial (default 9600 baud for XBee)
   XBEE_SERIAL.begin(9600);
-  
+
   Serial.println("XBee Sender Ready");
-  Serial.println("Sending data every 2 seconds...");
+  Serial.println("Sending data every 1 seconds...");
+  blinky(3, LED_BUILTIN, 50);  // (numtimes, pin, delaytime)
 }
 
 void loop() {
   // Create a message with a counter
   static unsigned long counter = 0;
-  
+
   // Send data to XBee
   String message = "Hello from Sender! Count: " + String(counter);
   XBEE_SERIAL.println(message);
-  
+
   // Debug output to USB Serial
   Serial.print("Sent: ");
   Serial.println(message);
-  
+
   counter++;
-  
+
   // Check if there's any response from receiver
   if (XBEE_SERIAL.available()) {
     Serial.print("Received: ");
@@ -46,6 +48,7 @@ void loop() {
     }
     Serial.println();
   }
-  
-  delay(2000); // Send every 2 seconds
+
+  delay(1000);                 // Send every 1 seconds
+  blinky(3, LED_BUILTIN, 50);  // (numtimes, pin, delaytime)
 }
