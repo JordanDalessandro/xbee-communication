@@ -12,10 +12,10 @@
 #define XBEE_SERIAL Serial1  // Using Serial1 on Teensy 4.1
 
 
-bool started = false;               // True when start marker is detected
-bool ended = false;                 // True when end marker is detected
-char incomingByte;                  // Storage for each byte read
-char msg[4];                        // Array to assemble the incoming message
+bool started = false;  // True when start marker is detected
+bool ended = false;    // True when end marker is detected
+char incomingByte;     // Storage for each byte read
+char msg[4];           // Array to assemble the incoming message
 byte index1 = 0;
 
 
@@ -35,35 +35,31 @@ void loop() {
   while (XBEE_SERIAL.available() > 0) {
     incomingByte = XBEE_SERIAL.read();
 
-    if (incomingByte == '<') 
-    {  // Detect start of the message
+    if (incomingByte == '<') {  // Detect start of the message
       started = true;
       index1 = 0;
-      msg[index1] = '\0';               // Clear the buffer
-    } 
-    
-    else if (incomingByte == '>') 
-    {  // Detect end of the message
+      msg[index1] = '\0';  // Clear the buffer
+    }
+
+    else if (incomingByte == '>') {  // Detect end of the message
       ended = true;
-      break;                            // Stop reading, process the message
-    } 
-    
-    else if (started && index1 < 3) 
-    {  // Store the byte in msg array if message has started
+      break;  // Stop reading, process the message
+    }
+
+    else {  // Store the byte in msg array if message has started
       msg[index1] = incomingByte;
       index1++;
       msg[index1] = '\0';  // Null terminate the string
     }
 
-    if (started && ended)
-    {
+    if (started && ended) {
       int value = atoi(msg);
-    // Display received data on Comp Serial
-    Serial.print("I received: ");
-    Serial.println(value);
+      // Display received data on Comp Serial
+      Serial.print("I received: ");
+      Serial.println(value);
 
-    started = false;
-    ended = false;
+      started = false;
+      ended = false;
     }
 
     // // Optional: Send acknowledgment back to sender
